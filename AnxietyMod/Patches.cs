@@ -135,11 +135,8 @@ namespace AnxietyMod
 // private static void Play_AfflictionAnxiety() is redundant. The game already triggers this when the affliction is added
 // private static void Play_AfflictionAnxietyTreated() I lost the functionality of this I dont know why
 
-// The torch seems to break scene changes
-// I *highly* recommend not including it for this reason
-// Besides, one does not usually wait or sleep while holding a lit torch anyway, as that would consume the torch
-// Also, the torch is not a weapon and can only hold wildlife at bay(for a limited amount of time), IRL would you really feel safe with just a torch?
-//
+// I removed the torch from my version because I don't usually wait or sleep while holding a lit torch, as that would consume the torch
+// 
 //
 // ////               v     UNUSED     v              ////
 //
