@@ -1,9 +1,9 @@
 # 
 forked from https://github.com/Atlas-Lumi/TLD-Afraid-of-the-Dark
 
-## Installation
+## Installation (placeholder - no release at this time)
 * Download and install [MelonLoader.Installer.exe](https://github.com/HerpDerpinstine/MelonLoader/releases/latest/download/MelonLoader.Installer.exe)
-* Move `Afraid-of-the-Dark.dll` to your /mods folder
+* Move `AnxietyMod.dll` to your /mods folder
 
 ## Special thanks to:
 Atlas-Lumi for getting this idea off the ground,
