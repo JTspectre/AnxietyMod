@@ -134,7 +134,6 @@ namespace AnxietyMod
 //
 // private static void Play_AfflictionAnxiety() is redundant. The game already triggers this when the affliction is added
 // private static void Play_AfflictionAnxietyTreated() I lost the functionality of this I dont know why
-
 // I removed the torch from my version because I don't usually wait or sleep while holding a lit torch, as that would consume the torch
 // 
 //
