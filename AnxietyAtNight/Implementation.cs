@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MelonLoader;
 using UnityEngine;
 
-namespace AnxietyAtNight
+namespace AnxietyMod
 {
     public class Implementation : MelonMod
     {

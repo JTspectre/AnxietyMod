@@ -2,30 +2,39 @@
 using UnityEngine;
 using System;
 
-namespace AnxietyAtNight
+namespace AnxietyMod
 {
     internal class Patches
     {
         [HarmonyPatch(typeof(Anxiety), "Update")]
         internal class Anxiety_Update
         {
-            public static bool HoldingLitTorch()
-            {
-                return (GameManager.GetPlayerManagerComponent().m_ItemInHands && GameManager.GetPlayerManagerComponent().m_ItemInHands.m_TorchItem && GameManager.GetPlayerManagerComponent().m_ItemInHands.m_TorchItem.IsBurning());
-            }
-            private static bool IsNight()
-            {
-                return GameManager.GetTimeOfDayComponent().IsNight();
-            }
-            private static bool IsDay()
+            private static bool affliction;
+            //
+            private static bool IsDay()//   Day is 7:00 to 19:00   //
             {
                 return GameManager.GetTimeOfDayComponent().IsDay();
             }
-            private static bool IsInShelter()
+            private static bool IsNight()//   Dusk is 19:00 to 20:00, Night is 20:00 to 6:00, Dawn is 6:00 to 7:00   //
             {
-                return GameManager.GetSnowShelterManager().PlayerInShelter();
+                if (GameManager.GetTimeOfDayComponent().IsNight())
+                {
+                    return true;
+                }
+                else if (GameManager.GetTimeOfDayComponent().IsDusk())
+                {
+                    return true;
+                }
+                else if (GameManager.GetTimeOfDayComponent().IsDawn())
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
-            private static bool IsInBuilding()
+            private static bool PlayerIsSheltered()//   Not all shelters are safe from hostile wildlife   //
             {
                 if (GameManager.GetWeatherComponent().IsIndoorScene())
                 {
@@ -35,68 +44,119 @@ namespace AnxietyAtNight
                 {
                     return true;
                 }
+                else if (GameManager.GetPlayerInVehicle().IsInside())
+                {
+                    return true;
+                }
+                else if (GameManager.GetSnowShelterManager().PlayerInShelter())
+                {
+                    return true;
+                }
+                //else if (GameManager.GetLeanToManager().PlayerInLeanTo())
+                //{
+                    //return true;
+                //}
                 else
                 {
                     return false;
                 }
             }
-            private static bool IsInCar()
+            private static bool FireIsBurning()
             {
-                return GameManager.GetPlayerInVehicle().IsInside();
+                Fire fireState = GameManager.GetFireManagerComponent().GetClosestFire(GameManager.GetPlayerTransform().position);
+                if (fireState)
+                {
+                    if (fireState.GetFireState() == FireState.FullBurn)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
             }
-            private static float GetDistanceToClosestFire()
+            private static float DistanceToClosestFire()
             {
                 return GameManager.GetFireManagerComponent().GetDistanceToClosestFire(GameManager.GetPlayerTransform().position);
             }
-            private static void Play_AfflictionAnxiety()
+            //private static void Play_AfflictionAnxietyTreated()
+            //{
+                //GameManager.GetPlayerVoiceComponent().Play("Play_VOCatchBreath", Voice.Priority.Normal);
+            //}
+            //
+            private static void Prefix(Anxiety __instance)
             {
-                GameManager.GetPlayerVoiceComponent().Play("PLAY_ANXIETYAFFLICTION", Voice.Priority.Normal);
-            }
-            private static void Play_AfflictionAnxietyCured()
-            {
-                GameManager.GetPlayerVoiceComponent().Play("Play_VOCatchBreath", Voice.Priority.Normal);
-            }
-
-            private static void Postfix(Anxiety __instance)
-            {
-                void AnxietyCuredPopup()
+                void AnxietyTreatedPopup()
                 {
-                    PlayerDamageEvent.SpawnAfflictionEvent(__instance.m_AnxietyLocalizedString.m_LocalizationID, "GAMEPLAY_Healed", __instance.m_AnxietyIcon, InterfaceManager.m_FirstAidBuffColor);
+                    PlayerDamageEvent.SpawnAfflictionEvent(__instance.m_AnxietyLocalizedString.m_LocalizationID, "Treated", __instance.m_AnxietyIcon, InterfaceManager.m_FirstAidBuffColor);
                 }
-
+                //
                 if (IsNight())
                 {
-                    bool scaredConditionFire = GetDistanceToClosestFire() < 3f;
-                    bool scaredConditionTorch = HoldingLitTorch();
-                    bool scaredConditionInCar = IsInCar();
-                    bool scaredConditionShelter = IsInShelter();
-                    bool scaredConditionBuilding = IsInBuilding();
-
-                    // None of the conditions are met, anxiety added
-                    if (!__instance.m_HasAffliction && (!scaredConditionFire && !scaredConditionTorch && !scaredConditionInCar && !scaredConditionShelter && !scaredConditionBuilding))
+                    bool fireStatus = FireIsBurning();
+                    bool distanceToFire = DistanceToClosestFire() < 4f;
+                    bool nearBurningFire = fireStatus && distanceToFire;
+                    bool sheltered = PlayerIsSheltered();
+                    //
+                    if (!affliction && !nearBurningFire && !sheltered)//   None of the conditions are met; anxiety added   //
                     {
                         __instance.StartAffliction();
-                        Play_AfflictionAnxiety();
-                        __instance.m_HasAffliction = true;
+                        //AnxietyVoiceStop() or AnxietyVoiceSwap();
+                        //AnxietyPopupRemoval();
+                        //CustomAnxietyPopup();
+                        affliction = true;
                     }
-                    // mmm. comfy.
-                    else if (__instance.m_HasAffliction && (scaredConditionTorch || scaredConditionInCar || scaredConditionShelter || scaredConditionFire || scaredConditionBuilding))
+                    else if (affliction && nearBurningFire || sheltered)//   Near a burning fire/embers, or sheltered; anxiety removed   //
                     {
                         __instance.StopAffliction(true);
-                        Play_AfflictionAnxietyCured();
-                        AnxietyCuredPopup();
-                        __instance.m_HasAffliction = false;
+                        //Play_AfflictionAnxietyTreated();
+                        affliction = false;
                     }
-                }           
-                // Day time, anxiety removed
-                else if (IsDay()&& __instance.m_HasAffliction)
+                }
+                else if (IsDay() && affliction)//   Day time; anxiety removed   //
                 {
                     __instance.StopAffliction(true);
-                    Play_AfflictionAnxietyCured();
-                    AnxietyCuredPopup();
-                    __instance.m_HasAffliction = false;
-                }              
+                    AnxietyTreatedPopup();
+                    affliction = false;
+                }
             }
         }
     }
 }
+// ///                      To Do                      ///
+//
+// Fix so embers do not treat affliction
+// Remove voice/sound cue from affliction (character wont stop talking; "It's like something out of a *cough* *low budget script* horror movie!")
+// Remove popup when affliction added (should be made removable for low/no HUD players)
+// Change health menu localizations to not reference the darkwalker
+//
+//
+// ///               Notes for Atlas-Lumi              ///
+//
+// private static void Play_AfflictionAnxiety() is redundant. The game already triggers this when the affliction is added
+// private static void Play_AfflictionAnxietyTreated() I lost the functionality of this I dont know why
+
+// The torch seems to break scene changes
+// I *highly* recommend not including it for this reason
+// Besides, one does not usually wait or sleep while holding a lit torch anyway, as that would consume the torch
+// Also, the torch is not a weapon and can only hold wildlife at bay(for a limited amount of time), IRL would you really feel safe with just a torch?
+//
+//
+// ////               v     UNUSED     v              ////
+//
+//public static bool HoldingLitTorch()
+//{
+    //return (GameManager.GetPlayerManagerComponent().m_ItemInHands && GameManager.GetPlayerManagerComponent().m_ItemInHands.m_TorchItem && GameManager.GetPlayerManagerComponent().m_ItemInHands.m_TorchItem.IsBurning());
+//}
+//
+//private static void Play_AfflictionAnxiety()
+//{
+    //GameManager.GetPlayerVoiceComponent().Play("PLAY_ANXIETYAFFLICTION", Voice.Priority.Normal);
+//}
+//
+// ////            v     NOT WORKING     v            ////
+//
+//private static void Play_AfflictionAnxietyCured()
+//{
+    //GameManager.GetPlayerVoiceComponent().Play("Play_VOCatchBreath", Voice.Priority.Normal);
+//}
+//
