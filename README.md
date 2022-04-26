@@ -6,6 +6,6 @@ forked from https://github.com/Atlas-Lumi/TLD-Afraid-of-the-Dark
 * Move `AnxietyMod.dll` to your /mods folder
 
 ## Special thanks to:
-Atlas-Lumi for getting this idea off the ground,
+Atlas-Lumi, for getting this idea off the ground
 
-The Long Dark Modding discord server for the giants whose shoulders we stand on
+The Long Dark Modding discord server, for the giants whose shoulders we stand on
