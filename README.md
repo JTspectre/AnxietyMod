@@ -1,5 +1,4 @@
-# 
-forked from https://github.com/Atlas-Lumi/TLD-Afraid-of-the-Dark
+Forked from https://github.com/Atlas-Lumi/TLD-Afraid-of-the-Dark
 
 ## Installation (placeholder - no release at this time)
 * Download and install [MelonLoader.Installer.exe](https://github.com/HerpDerpinstine/MelonLoader/releases/latest/download/MelonLoader.Installer.exe)
