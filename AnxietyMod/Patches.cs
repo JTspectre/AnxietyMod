@@ -2,7 +2,7 @@
 using UnityEngine;
 using System;
 
-namespace AnxietyMod
+namespace AnxietyAtNight
 {
     internal class Patches
     {

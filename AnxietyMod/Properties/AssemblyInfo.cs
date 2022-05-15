@@ -6,12 +6,12 @@ using MelonLoader;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("AnxietyMod")]
+[assembly: AssemblyTitle("AnxietyAtNight(modified)")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Hewlett-Packard")]
-[assembly: AssemblyProduct("AnxietyMod")]
-[assembly: AssemblyCopyright("Copyright © Hewlett-Packard 2022")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("AnxietyAtNight(modified)")]
+[assembly: AssemblyCopyright("Copyright © 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,7 +33,7 @@ using MelonLoader;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.1")]
-[assembly: AssemblyFileVersion("1.0.0.1")]
-[assembly: MelonInfo(typeof(AnxietyMod.Implementation), "AnxietyMod", "1.0.0.1", "JTspectre")]
+[assembly: AssemblyVersion("1.0.2")]
+[assembly: AssemblyFileVersion("1.0.2")]
+[assembly: MelonInfo(typeof(AnxietyAtNight.Implementation), "AnxietyAtNight(modified)", "1.0.2", "Atlas Lumi (modified by JTspectre)")]
 [assembly: MelonGame("Hinterland", "TheLongDark")]
