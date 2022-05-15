@@ -1,8 +1,8 @@
-Enables anxiety affliction in survival mode.
+Enables anxiety at night in survival mode.
 
 ## Installation
 * Download and install [MelonLoader.Installer.exe](https://github.com/HerpDerpinstine/MelonLoader/releases/latest/download/MelonLoader.Installer.exe)
-* Move `AnxietyMod.dll` to your /mods folder
+* Move `AnxietyAtNight(modified).dll` to your /mods folder
 
 ## Special thanks to:
 * Atlas-Lumi, for getting this idea off the ground
